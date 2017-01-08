@@ -1,0 +1,24 @@
+{
+  "name": "start",
+  "version": "0.1.0",
+  "homepage": "https://github.com/kn9ts/start-to-gulp",
+  "authors": [
+    "Eugene Mutai <eugenemutai@gmail.com>"
+  ],
+  "description": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vue": "^2.1.8",
+    "blaze": "blazecss#^3.0.0",
+    "zepto": "^1.2.0",
+    "underscore": "^1.8.3",
+    "jquery": "^3.1.1"
+  }
+}

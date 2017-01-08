@@ -1,0 +1,48 @@
+{
+  "manifest_version": 2,
+  "name": "VituMob",
+  "version": "3.0.0",
+  "description": "Everything. Everyday.",
+  "icons": {
+    "16": "images/vitumob/icon24.png",
+    "48": "images/vitumob/icon48.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "images/vitumob/icon24.png",
+      "38": "images/vitumob/icon48.png"
+    },
+    "default_title": "Click here to see your shopping cart."
+  },
+  "background": {
+    "scripts": [
+      "vendor/zepto/zepto.min.js",
+      "scripts/background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [{
+    "run_at": "document_idle",
+    "matches": ["http://*/*", "https://*/*"],
+    "js": [
+      "vendor/zepto/zepto.min.js",
+      "scripts/contentscript.js"
+    ]
+  }],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "alarms",
+    "notifications",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "web_accessible_resources": [
+    "images/vitumob/vm-logo.png",
+    "images/vitumob/vm-tag.png",
+    "images/vitumob/icon24.png",
+    "images/vitumob/icon48.png",
+    "injectables/header-bar.html",
+    "injectables/modal-box.html"
+  ]
+}

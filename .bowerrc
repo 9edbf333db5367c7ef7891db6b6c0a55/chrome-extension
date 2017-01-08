@@ -1,0 +1,6 @@
+{
+  "directory": "public/vendor",
+  "analytics": false,
+  "timeout": 120000,
+  "color": true
+}

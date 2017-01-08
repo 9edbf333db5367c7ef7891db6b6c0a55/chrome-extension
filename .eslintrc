@@ -1,0 +1,57 @@
+{
+    "extends": "airbnb",
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true,
+        "shared-node-browser": true,
+        "mocha": true,
+    },
+    "globals": {
+        "$": true,
+        "__dirname": true,
+        "after": true,
+        "afterEach": true,
+        "angular": true,
+        "assert": true,
+        "before": true,
+        "beforeEach": true,
+        "by": true,
+        "browser": true,
+        "chai": true,
+        "console": true,
+        "describe": true,
+        "element": true,
+        "expect": true,
+        "exports": true,
+        "it": true,
+        "inject": true,
+        "jQuery": true,
+        "jasmine": true,
+        "module": true,
+        "moment": true,
+        "process": true,
+        "require": true,
+        "should": true,
+        "sinon": true,
+        "Vue": true,
+        "VueRouter": true,
+    },
+    "rules": {
+        "prefer-template": 0,
+        "prefer-rest-params": 0,
+        "strict": 0,
+        "no-unused-expressions": 0,
+        "no-param-reassign": 0,
+        "max-len": [
+            2,
+            100,
+            2,
+            {
+                "ignoreComments": true,
+                "ignoreUrls": true,
+                "ignorePattern": "\/(.*)\/;"
+            }
+        ]
+    }
+}
