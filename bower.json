@@ -15,10 +15,11 @@
     "tests"
   ],
   "dependencies": {
-    "vue": "^2.1.8",
     "blaze": "blazecss#^3.0.0",
     "zepto": "^1.2.0",
     "underscore": "^1.8.3",
-    "jquery": "^3.1.1"
+    "jquery": "^3.1.1",
+    "velocity": "^1.4.1",
+    "mustache.js": "mustache#^2.3.0"
   }
 }

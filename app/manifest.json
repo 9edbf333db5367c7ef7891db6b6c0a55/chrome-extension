@@ -43,6 +43,6 @@
     "images/vitumob/icon24.png",
     "images/vitumob/icon48.png",
     "injectables/header-bar.html",
-    "injectables/modal-box.html"
+    "injectables/modal.html"
   ]
 }
