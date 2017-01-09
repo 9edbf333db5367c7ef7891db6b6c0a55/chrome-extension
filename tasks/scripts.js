@@ -1,12 +1,25 @@
 export function transpileScripts(gulp, plugins, paths) {
-  return () => {
-    const production = (process.env.ENV == 'production');
-    // console.log('Enviroment: ' + String(process.env.ENV));
+  const production = (process.env.ENV == 'production');
+  const browserify = () => {
+    return plugins.eventStream.map((file, fn) => {
+      const b = plugins.browserify({
+        entries: file.path,
+        debug: true,
+        paths: [paths.scripts],
+        transform: [plugins.babelify]
+      });
 
-    gulp.src(paths.scripts)
+      file.contents = b.bundle();
+      fn(null, file);
+    });
+  };
+
+  return () => {
+    gulp.src('app/scripts/*.js')
+      .pipe(browserify())
+      .pipe(plugins.buffer())
       .pipe(plugins.size({ title: 'Before:', showFiles: true }))
-      .pipe(plugins.sourcemaps.init())
-      .pipe(plugins.babel())
+      .pipe(plugins.sourcemaps.init({ loadMaps: true }))
       // .pipe(plugins.concat('main.js'))
       .pipe(plugins.if(production, plugins.uglify({ preserveComments: 'some' })))
       // Output files
