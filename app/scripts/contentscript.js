@@ -1,34 +1,17 @@
+import config from './helpers/config';
+import headerbar from './includes/headerbar';
+import modal from './includes/modal';
+
 $(document).ready(() => {
-  $('<div id=\'vitumob-header-bar\' />')
-    .prependTo('body')
-    .load(chrome.extension.getURL('injectables/header-bar.html'));
-
-  $('<div id=\'vitumob-modal-box\' />')
-    .prependTo('body')
-    .load(chrome.extension.getURL('injectables/modal-box.html'));
-
-  $(document).on('scroll', function() {
-    let header; // if someone has scrolled, dublicate and place the header at the top fixed pos
-    const headerBar = $('.vm-header-bar');
-    const cssStyling = {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      zIndex: 9999,
-      width: '100%'
-    };
-
-    if (window.scrollY > headerBar.height()) {
-      if ($('.vitumob-fixed-header').length < 1) {
-        header = headerBar.clone();
-        header.css(cssStyling).addClass('vitumob-fixed-header');
-        header.click(() => { console.log('clicked'); });
-        $('body').prepend(header);
-      } else {
-        $('.vitumob-fixed-header').show();
-      }
-    } else { // else if it was created, hide it
-      if ($('.vitumob-fixed-header')) $('.vitumob-fixed-header').hide();
-    }
-  });
+  // Check if the site loaded is one of the merchants we support
+  // and is not AWS's console/console
+  const hostname = location.hostname.replace('www.', '');
+  const isNotAWSConsole = 'aws' in hostname.split('.');
+  const isMerchant = $.inArray(hostname, config.merchants);
+  if (isMerchant > -1 && !isNotAWSConsole) {
+    // Add logic once headerbar & modal box have been injected and compiled
+    Promise.all([headerbar(), modal()]).then(() => {
+      // VM headerbar and modal loaded up into the page
+    });
+  }
 });
