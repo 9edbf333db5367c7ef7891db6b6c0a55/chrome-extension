@@ -1,15 +1,14 @@
 export default {
   serverURL: 'https://vitumob.com',
   merchants: [
-    'amazon.co.uk',
-    'amazon.com',
+    'amazon.co.uk', 'amazon.com',
     'apple.com',
     // 'aritzia.com',
     'armaniexchange.com',
     'autopartswarehouse.com',
     'barneys.com',
     'bathandbodyworks.com',
-    // 'beauty.com', 'drugstore.com', => closed down
+    // 'beauty.com', 'drugstore.com', => closed down redirect to walgreens
     'bestbuy.com',
     // 'cabelas.com',
     'cellhut.com',
@@ -25,7 +24,7 @@ export default {
     'hm.com',
     'lessthan10pounds.com',
     'macys.com',
-    'marksandspencer.com', 'marksandspencerlondon.com', // same thing
+    'marksandspencer.com', 'marksandspencerlondon.com',
     // 'missguidedus.com',
     'motherhood.com',
     'neimanmarcus.com',

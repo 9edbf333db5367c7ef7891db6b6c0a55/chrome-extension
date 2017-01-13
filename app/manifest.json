@@ -38,11 +38,8 @@
     "https://*/*"
   ],
   "web_accessible_resources": [
-    "images/vitumob/vm-logo.png",
-    "images/vitumob/vm-tag.png",
-    "images/vitumob/icon24.png",
-    "images/vitumob/icon48.png",
-    "injectables/header-bar.html",
-    "injectables/modal.html"
+    "images/vitumob/*.png",
+    "injectables/*.html",
+    "scripts/scrapers/*.js"
   ]
 }
