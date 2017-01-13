@@ -1,19 +1,19 @@
-.vm-modal-box.o-grid.o-grid--wrap
+#vm-modal-box.vm-modal-box.o-grid.o-grid--wrap
     link(rel='stylesheet', href='./public/vendor/blaze/dist/blaze.min.css')
     link(rel='stylesheet', href='./public/css/modal.css')
        
     .vm-overlay.c-overlay.c-overlay--fullpage
     .vm-card.o-grid__cell.o-grid__cell--width-100.o-grid__cell--offset-0(class="o-grid__cell--width-33@medium o-grid__cell--offset-35@medium")
         .c-card.c-card--higher
-            img.vitumob-left-logo(src="http://res.cloudinary.com/dpmk2cnpi/image/upload/v1483876646/vm-logo_hsvchn.png")
-            .c-card__header.vm-action-message
+            img.vm-modal-logo(src="http://res.cloudinary.com/dpmk2cnpi/image/upload/v1483876646/vm-logo_hsvchn.png")
+            .c-card__header.modal-action-header
                 | Checking out your cart now
-                .c-heading__sub.vm-current-merchant 
+                .c-heading__sub 
                     | from 
-                    span.vm-current-merchant victoriassecret.com
+                    span.modal-action-merchant victoriassecret.com
             .c-card__body
-                p.c-paragraph.vm-modal-message Doing some work here...
+                p.c-paragraph.modal-action-message Doing some work here...
             .c-card__footer.c-card__footer--block
                 .c-input-group
-                    .c-button.c-button--block.c-button--brand Cancel
-                    .c-button.c-button--block.c-button--info Okay
+                    .vm-cancel-button.c-button.c-button--block.c-button--brand Cancel
+                    .vm-okay-button.c-button.c-button--block.c-button--info Okay
