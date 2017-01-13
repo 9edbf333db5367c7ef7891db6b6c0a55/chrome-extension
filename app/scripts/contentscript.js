@@ -2,6 +2,7 @@ import config from './helpers/config';
 import headerbar from './includes/headerbar';
 import modal from './includes/modal';
 import main from './main';
+// import axois from 'axois';
 
 $(document).ready(() => {
   // Check if the site loaded is one of the merchants we support
@@ -20,16 +21,24 @@ $(document).ready(() => {
       // check for the VM hashtag in the page
       if (location.href.indexOf('vm-autocheckout') > -1) {
         // tell the user VM has began extracting the items in the page
-        modalbox.find('.modal-action-merchant').text(merchantScraper.host);
+        modalbox.find('.modal-action-merchant').text(location.hostname);
         modalbox.find('.modal-action-message').text('Please give us a few seconds...');
         modalbox.show();
         // wait for the page to complete loading then start the extraction
         window.onload = () => {
           const cartItems = merchantScraper.scraper();
+          if (!cartItems.length) {
+            chrome.runtime.sendMessage({
+              type: 'SHOPPING_CART_IS_EMPTY',
+              hostname: location.hostname,
+            });
+            return;
+          }
+
           const dataToSubmit = Object.assign({ cartItems }, merchantScraper);
           console.log(dataToSubmit);
           // axios.post('').then()
-        }
+        };
       }
 
       // TO DO: Trottle/Debounce the header clicking to be clicked once every 3 seconds
