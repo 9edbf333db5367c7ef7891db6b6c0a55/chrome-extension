@@ -22,6 +22,10 @@ export default {
       }
 
       const priceString = itemElement.find('.sc-product-price').text().replace(/\$|,|\s/g, '');
+      if (priceString.indexOf('£') > -1) {
+        item.priceInPounds = true;
+      }
+
       item.price = parseFloat(priceString, 10);
       item.image = itemElement.find('img.sc-product-image').attr('src');
       item.link = itemElement.find('.sc-product-link').attr('href');
