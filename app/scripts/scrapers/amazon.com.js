@@ -7,7 +7,7 @@ export default {
     const cartItems = $('#sc-active-cart .sc-list-body .sc-list-item')
       .not('.sc-action-move-to-cart');
 
-    return cartItems.map(function itemLoop() {
+    return cartItems.map(function cartItemLoop() {
       const itemElement = $(this);
       const item = {};
       item.id = itemElement.data('itemid');

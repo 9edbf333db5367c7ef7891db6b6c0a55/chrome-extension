@@ -26,25 +26,28 @@ $(document).ready(() => {
         modalbox.show();
         // wait for the page to complete loading then start the extraction
         window.onload = () => {
-          const cartItems = merchantScraper.scraper();
-          if (!cartItems.length) {
-            chrome.runtime.sendMessage({
-              type: 'SHOPPING_CART_IS_EMPTY',
-              hostname: location.hostname,
-            });
-            return;
-          }
+          try {
+            const cartItems = merchantScraper.scraper();
+            if (!cartItems.length) {
+              chrome.runtime.sendMessage({
+                type: 'SHOPPING_CART_IS_EMPTY',
+                hostname: location.hostname,
+              });
+              return;
+            }
 
-          const dataToSubmit = Object.assign({ cartItems }, merchantScraper);
-          console.log(dataToSubmit);
-          // axios.post('').then()
+            const dataToSubmit = Object.assign({ cartItems }, merchantScraper);
+            console.log(dataToSubmit);
+          } catch (err) {
+            // On error, GRAB MERCHANT CART HTML, stringify it and send it to VM admin as email
+          }
         };
       }
 
       // TO DO: Trottle/Debounce the header clicking to be clicked once every 3 seconds
       const headerBarOnClick = () => {
         if (location.href.indexOf(merchantScraper.cartPath) === -1) {
-          location.pathname = merchantScraper.cartPath + '#vm-autocheckout';
+          window.location = encodeURI(merchantScraper.cartPath + '#vm-autocheckout');
         }
         // user happens to be in the cart page
         // just load up the scrapper
