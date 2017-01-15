@@ -18,12 +18,12 @@ export default {
       item.name = itemElement.find('.sci-itmttl a').text().trim();
       item.name = item.name.replace(/("|\n)/g, '').trim();
 
+      item.image = itemElement.find('.imganchor img').attr('src');
       item.link = itemElement.find('.sci-itmttl a').attr('href');
       item.quantity = parseInt(itemElement.find('input.qtyTextBox').val(), 10);
 
       const priceString = itemElement.find('.prcol140 .fw-b').text().replace(/\$|,|\s/g, '');
       item.price = parseFloat(priceString, 10);
-      item.image = itemElement.find('.imganchor img').attr('src');
       return item;
     });
   },

@@ -14,6 +14,9 @@ export default {
       item.name = itemElement.find('.sc-product-link .sc-product-title').first().text();
       item.name = item.name.replace(/("|\n)/g, '').trim();
 
+      item.image = itemElement.find('img.sc-product-image').attr('src');
+      item.link = itemElement.find('.sc-product-link').attr('href');
+
       const dropdown = itemElement.find('.a-dropdown-prompt');
       if (dropdown.length >= 1 || (dropdown.text() && dropdown.text().indexOf('10+') === -1)) {
         item.quantity = parseInt(dropdown.text(), 10);
@@ -27,8 +30,6 @@ export default {
       }
 
       item.price = parseFloat(priceString, 10);
-      item.image = itemElement.find('img.sc-product-image').attr('src');
-      item.link = itemElement.find('.sc-product-link').attr('href');
       return item;
     });
   },

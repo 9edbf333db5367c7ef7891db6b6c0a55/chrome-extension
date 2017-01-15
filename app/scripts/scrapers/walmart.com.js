@@ -11,12 +11,13 @@ export default {
       item.id = itemElement.find('.js-btn-product.btn-fake-link').data('us-item-id');
       item.name = itemElement.find('.js-btn-product').text();
       item.name = item.name.replace(/("|\n)/g, '').trim();
+
+      item.image = itemElement.find('.asset-container img').attr('src');
+      item.link = encodeURI('https://www.walmart.com/search/?query=' + item.name);
       item.quantity = parseInt(itemElement.find('.chooser-option-current').text(), 10);
 
       const priceString = itemElement.find('.Price span').text().replace(/\$|,|\s/g, '');
-      item.price = parseFloat(priceString, 10);
-      item.image = itemElement.find('.asset-container img').attr('src');
-      item.link = encodeURI('https://www.walmart.com/search/?query=' + item.name);
+      item.price = parseFloat(priceString, 10) / item.quantity;
       return item;
     });
   },
