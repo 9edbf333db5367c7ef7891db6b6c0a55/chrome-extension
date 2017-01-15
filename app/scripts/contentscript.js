@@ -7,8 +7,8 @@ import main from './main';
 $(document).ready(() => {
   // Check if the site loaded is one of the merchants we support
   // and is not AWS's console/console
-  const hostname = location.hostname.replace('www.', '');
-  const isNotAWSConsole = 'aws' in hostname.split('.') || 'console' in hostname.split('.');
+  const hostname = location.hostname.split('.').splice(-2).join('.');
+  const isNotAWSConsole = 'aws' in location.hostname.split('.') || 'console' in location.hostname.split('.');
   const isMerchant = $.inArray(hostname, config.merchants);
   if (isMerchant > -1 && !isNotAWSConsole) {
     // Add logic once headerbar & modal box have been injected and compiled
@@ -40,6 +40,7 @@ $(document).ready(() => {
             console.log(dataToSubmit);
           } catch (err) {
             // On error, GRAB MERCHANT CART HTML, stringify it and send it to VM admin as email
+            console.error(err);
           }
         };
       }
@@ -47,7 +48,7 @@ $(document).ready(() => {
       // TO DO: Trottle/Debounce the header clicking to be clicked once every 3 seconds
       const headerBarOnClick = () => {
         if (location.href.indexOf(merchantScraper.cartPath) === -1) {
-          window.location = encodeURI(merchantScraper.cartPath + '#vm-autocheckout');
+          window.location = encodeURI(merchantScraper.cartPath + '?#vm-autocheckout');
         }
         // user happens to be in the cart page
         // just load up the scrapper
