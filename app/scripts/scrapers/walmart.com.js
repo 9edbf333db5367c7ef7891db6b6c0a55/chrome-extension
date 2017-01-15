@@ -3,7 +3,6 @@ export default {
   host: 'https://www.walmart.com',
   cartPath: '/cart',
   scraper() {
-    // .not(...) removes items that are in wish list/saved for later
     const cartItems = $('.cart-list.cart-list-active .cart-item-row > .cart-item-row');
 
     return cartItems.map(function cartItemLoop() {
