@@ -7,11 +7,12 @@ export default () => {
         $(this).parent().parent().hide();
       });
 
-      $('.vm-cancel-button').click(() => {
+      $('.vm-cancel-button').click(function hideModalBox() {
         // TO DO:
         // revert(remove) the checkout items that were just checked out
         // get the ORDER ID, get the ITEMS related to the ID and DELETE them
         // DELETE /order/:orderId
+        $(this).closest('#vm-modal-box').hide();
       });
       resolve($('#vm-modal-box'));
     });
