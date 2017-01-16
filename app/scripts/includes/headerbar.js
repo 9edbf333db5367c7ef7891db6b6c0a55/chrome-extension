@@ -23,7 +23,7 @@ export default () => {
 
       // add scroll behaviour for the sticky headerBar
       $(document).on('scroll', () => {
-        if (window.scrollY > headerBar.height()) {
+        if (window.scrollY > headerBar.height() * 0.80) {
           stickyHeaderBar.show();
         } else {
           stickyHeaderBar.hide();
