@@ -3,6 +3,7 @@
 ## For this specific project
 public/
 *.html
+public.zip
 
 ### Node ###
 # Logs
