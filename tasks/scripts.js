@@ -19,7 +19,7 @@ export function transpileScripts(gulp, plugins, paths) {
       .pipe(browserify())
       .pipe(plugins.buffer())
       .pipe(plugins.size({ title: 'Before:', showFiles: true }))
-      .pipe(plugins.sourcemaps.init({ loadMaps: true }))
+      .pipe(plugins.if(!production, plugins.sourcemaps.init({ loadMaps: true })))
       // .pipe(plugins.concat('main.js'))
       .pipe(plugins.if(production, plugins.uglify({ preserveComments: 'some' })))
       // Output files
