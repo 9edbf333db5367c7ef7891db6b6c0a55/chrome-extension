@@ -4,6 +4,7 @@ import headerbar from './includes/headerbar';
 import modal from './includes/modal';
 import merchants from './merchants';
 
+
 $(document).ready(() => {
   // Check if the site loaded is one of the merchants we support
   // and is not AWS's console/console
@@ -72,14 +73,18 @@ $(document).ready(() => {
           request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
           request.onload = () => {
             if (request.readyState === request.DONE && request.status === 200) {
-              // TO DO:
-              // Get back the CART ID
-              // Open new TAB with URL: http://vitumob.com/cart/:CART_ID and forcus on it
-              console.log(JSON.parse(request.responseText));
+              const orderCreated = JSON.parse(request.responseText);
+
+              // open a new tab, showing the user their cart
+              chrome.runtime.sendMessage({
+                type: 'OPEN_VITUMOB_CART',
+                link: 'http://vitumob.com/cart/' + orderCreated.order_hex,
+              });
             }
           };
           request.onerror = (error) => { console.error(error); };
-          request.send(JSON.stringify({ order }));
+          const orderToString = JSON.stringify({ order });
+          request.send(orderToString);
         } catch (err) {
           // TO DO:
           // On error, GRAB MERCHANT CART HTML
@@ -101,7 +106,7 @@ $(document).ready(() => {
       // TO DO: Trottle/Debounce the header clicking to be clicked once every 3 seconds
       const headerBarOnClick = () => {
         if (location.href.indexOf(merchantScraper.cartPath) === -1) {
-          window.location = encodeURI(merchantScraper.cartPath + '?vmType=#vm-autocheckout');
+          window.location = encodeURI(merchantScraper.cartPath + '#vm-autocheckout');
           return;
         }
 
