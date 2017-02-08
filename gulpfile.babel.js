@@ -11,7 +11,7 @@ import juice from 'juice';
 import eventStream from 'event-stream';
 
 
-let tasks = {};
+const tasks = {};
 const defaultBuildDirectory = './public';
 
 // This gulp's file base bath should be the root of the project
@@ -49,17 +49,17 @@ const paths = {
   jade: [
     '!app/views/layouts/*.jade',
     '!app/views/includes/*.jade',
-    'app/views/**/*.jade'
+    'app/views/**/*.jade',
   ],
   styles: [
     'app/styles/less/*.+(less|css)',
     '!app/styles/less/layouts/*.+(less|css)',
-    '!app/styles/less/base/*.+(less|css)'
+    '!app/styles/less/base/*.+(less|css)',
   ],
   staticFiles: [
     '!app/**/*.+(less|css|js|jade)',
     '!app/images/**/*',
-    'app/**/*.*'
+    'app/**/*.*',
   ],
   scripts: 'app/scripts/**/*.js',
   backendScripts: 'server/**/*.+(js|coffee)',
@@ -69,7 +69,7 @@ const paths = {
   // If you're serving your application using node.js
   // use the option commented and set the correct proxy you are using
   // For express is usually: localhost:3000
-  serverURL: process.env.PROJECT_BUILD_FOLDER // localhost:3000
+  serverURL: process.env.PROJECT_BUILD_FOLDER, // localhost:3000
 };
 
 // build directories for individual type of files
@@ -80,16 +80,15 @@ paths.builtStyles = process.env.PROJECT_BUILD_FOLDER + '/css/**/*.css';
 // Require this to convert different ways of naming files into carmel case
 // eg. clean-script.js, clean.scripts.js, clean_scripts.js, static_files-public.js
 String.prototype.toCamelCase = function() {
-  return ((/^[A-Z]/g.test(this) ? "-" : "") + this).replace(/[-_.]+([^-_.])/g, function(p1, p2) {
-    return p2.toUpperCase();
-  });
+  return ((/^[A-Z]/g.test(this) ? '-' : '') + this)
+    .replace(/[-_.]+([^-_.])/g, (p1, p2) => p2.toUpperCase());
 };
 
 // This function gets all the tasks from your tasks folder
 // adding the functions into tasks object
 fs.readdirSync(path.join(__dirname, './tasks'))
   .filter(file => (file.indexOf('.') !== 0) && (file !== basename))
-  .forEach(file => {
+  .forEach((file) => {
     // check if it's a javascript file, if not terminate current loop
     if (file.slice(-3) !== '.js') return;
     const module = require('./tasks/' + file);
@@ -116,10 +115,9 @@ gulp.task('images', tasks.images(gulp, plugins, paths));
 gulp.task('static-files', tasks.staticFiles(gulp, plugins, paths));
 
 // Files to watch
-const reloadBrowser = plugins.browserSync.reload;
 gulp.task('watch', () => {
-  gulp.watch(paths.jade.map(p => p.replace(/\!/g, '')), ['jade']);
-  gulp.watch(paths.styles.map(p => p.replace(/\!/g, '')), ['less', 'jade']);
+  gulp.watch(paths.jade.map(p => p.replace(/!/g, '')), ['jade']);
+  gulp.watch(paths.styles.map(p => p.replace(/!/g, '')), ['less', 'jade']);
   gulp.watch(paths.scripts, ['scripts']);
   gulp.watch(['./gulpfile.babel.js', './tasks/**/*.js'], ['build']);
 });
@@ -151,4 +149,4 @@ gulp.task('heroku:production', ['build']);
 gulp.task('heroku:staging', ['build']);
 
 // for tests
-gulp.task('test', ['test:fend', 'test:bend' /*, 'e2e' */ ]);
+gulp.task('test', ['test:fend', 'test:bend']);
