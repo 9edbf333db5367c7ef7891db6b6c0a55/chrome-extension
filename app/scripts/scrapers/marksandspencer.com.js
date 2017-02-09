@@ -26,6 +26,10 @@ export default {
       }
 
       const priceString = itemElement.find('.product-item__subtotal > p').text();
+      if (priceString.indexOf('£') > -1) {
+        item.priceInPounds = true;
+      }
+
       item.price = parseFloat(priceString.replace(/\$|£|,|\s/g, ''), 10) / item.quantity;
       return item;
     });
