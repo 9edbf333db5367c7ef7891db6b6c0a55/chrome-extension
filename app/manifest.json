@@ -34,8 +34,8 @@
     "activeTab",
     "alarms",
     "notifications",
-    "http://*/*",
-    "https://*/*"
+    "http://*/",
+    "https://*/"
   ],
   "web_accessible_resources": [
     "images/vitumob/*.png",

@@ -1,6 +1,6 @@
 export function initBrowserSync(gulp, plugins, paths) {
   var config = {};
-  config.logPrefix = 'awesome project';
+  config.logPrefix = 'vmExtension';
   config.reloadDebounce = 3000;
 
   // check if nodemon has been installed
