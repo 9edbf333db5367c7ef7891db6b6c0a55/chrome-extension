@@ -4,6 +4,8 @@
 public/
 *.html
 public.zip
+.vscode/
+docs/
 
 ### Node ###
 # Logs

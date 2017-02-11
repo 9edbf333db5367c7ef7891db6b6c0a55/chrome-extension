@@ -141,7 +141,7 @@ try {
 }
 
 // default tasks
-gulp.task('build', ['jade', 'less', 'static-files', 'images', 'scripts', 'bower']);
+gulp.task('build', ['jade', 'less', 'static-files', 'images', 'scripts']);
 gulp.task('sync', ['clean', 'default', 'browser-sync']);
 
 // for heroku
