@@ -124,7 +124,7 @@ export default {
 
       return {
         title: item.find('Title').text(),
-        itemId: item.find('ASIN').text(),
+        asin: item.find('ASIN').text(),
         shippingCost,
         shippingDetails,
       };
