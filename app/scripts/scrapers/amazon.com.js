@@ -18,7 +18,7 @@ export default {
       item.name = item.name.replace(/("|\n)/g, '').trim();
 
       item.image = itemElement.find('img.sc-product-image').attr('src');
-      item.link = itemElement.find('.sc-product-link').attr('href');
+      item.link = 'https://www.amazon.com' + itemElement.find('.sc-product-link').attr('href');
 
       const dropdown = itemElement.find('.a-dropdown-prompt');
       if (dropdown.length >= 1 || (dropdown.text() && dropdown.text().indexOf('10+') === -1)) {
@@ -115,6 +115,8 @@ export default {
         } else {
           shippingCost = shippingDetails.weight * 7.50;
         }
+      } else {
+        shippingCost += (2.20462 * 7.50);
       }
 
       // If it's not a prime item add 5 dollar on top for shipping
@@ -131,12 +133,3 @@ export default {
     });
   },
 };
-
-// Volumetric weight is length x width x height in centimeters, divided by 6000.
-// If you scroll down to Product Details, you will see the dimensions are 19.8 x 20.5 x 19.8 inches., or 8,037 cubic inches. That is 131,700 cubic centimeters. (To get cubic centimeters from cubic inches you always multiply by 16.387064.)
-
-// To get volumetric weight, you divide cubic centimeters by 6000, so that equals 21.9 kg.
-
-// Under Product Details, you will also see the shipping weight is 17.2 lbs., or 7.8 kg. (To get kg. from lbs. you always divide by 2.2)
-
-// 21.9 kg. is greater than 7.8 kg., so our shipping cost is $219. The extension should add the $219 to the price of the product, $59.99, and so the total cost of the item is $278.99.
