@@ -2,14 +2,13 @@ import config from './helpers/config';
 import headerbar from './includes/headerbar';
 import modal from './includes/modal';
 import main from './main';
-// import axois from 'axois';
 
 $(document).ready(() => {
   // Check if the site loaded is one of the merchants we support
   // and is not AWS's console/console
   let { hostname } = location;
   hostname = hostname.split('.').splice(-2).join('.');
-  const isNotAWSConsole = 'aws' in hostname.split('.') || 'console' in hostname.split('.');
+  const isNotAWSConsole = 'aws' in hostname.split('.') || /(doc|console)/g.test(hostname);
   const isMerchant = $.inArray(hostname, config.merchants);
 
   if (isMerchant > -1 && !isNotAWSConsole) {
@@ -46,14 +45,23 @@ $(document).ready(() => {
             return;
           }
 
-          const dataToSubmit = Object.assign({ cartItems }, merchantScraper);
-          console.log(dataToSubmit);
+          const orderToSubmit = Object.assign({}, { cartItems, merchantScraper });
+          console.log(orderToSubmit);
 
-          // TO DO:
-          // Submit the data to VM server
-          // Get back the CART ID
-          // Open new TAB with URL : http://vitumob.com/cart/:CART_ID
-          // focus on that TAB
+          // For fetching dimension from items to used in Volumetric Weight Calculation
+          if ('getItemShippingCost' in merchantScraper) {
+            const shippingCosts = [];
+            let timeOut = 0;
+            for (let x = 0; x < cartItems.length; x + 10) {
+              shippingCosts.push(merchantScraper.getItemShippingCost(cartItems.splice(x, 10), timeOut));
+              timeOut += 1100;
+            }
+
+            Promise.all(shippingCosts).then(function allItemsShippingCost() {
+              const itemsShippingCost = arguments.reduce((a, b) => a.concat(b), []);
+              console.log(itemsShippingCost);
+            });
+          }
         } catch (err) {
           // On error, GRAB MERCHANT CART HTML, stringify it and send it to VM admin as email
           console.error(err);
@@ -74,11 +82,12 @@ $(document).ready(() => {
       const headerBarOnClick = () => {
         if (location.href.indexOf(merchantScraper.cartPath) === -1) {
           window.location = encodeURI(merchantScraper.cartPath + '?vmType=#vm-autocheckout');
-        } else {
-          vmCheckout();
+          return;
         }
+
         // user happens to be in the cart page
         // just load up the scrapper
+        vmCheckout();
       };
 
       headerBar.click(headerBarOnClick);
