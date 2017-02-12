@@ -8,10 +8,10 @@ $(document).ready(() => {
   // and is not AWS's console/console
   let { hostname } = location;
   hostname = hostname.split('.').splice(-2).join('.');
-  const isNotAWSConsole = !/(aws|doc|console)/g.test(hostname);
+  const isNotOtherAWSServices = /(aws|doc|console)/g.test(hostname);
   const isMerchant = $.inArray(hostname, config.merchants);
 
-  if (isMerchant > -1 && !isNotAWSConsole) {
+  if (isMerchant > -1 && !isNotOtherAWSServices) {
     // Add logic once headerbar & modal box have been injected and compiled
     Promise.all([headerbar(), modal()]).then((promised) => {
       // VM headerbar and modal injected into the merchant's page
@@ -63,9 +63,9 @@ $(document).ready(() => {
                 item = Object.assign(item, shippingDetails);
               });
 
-              const orderToSubmit = Object.assign({}, { cartItems, merchantScraper });
+              const { name, host } = merchantScraper;
               const data = new FormData();
-              data.append('order', JSON.stringify(orderToSubmit));
+              data.append('order', JSON.stringify({ name, host, items: cartItems.selector }));
 
               const request = new XMLHttpRequest();
               request.open('POST', 'https://api.vitumob.com', true);
