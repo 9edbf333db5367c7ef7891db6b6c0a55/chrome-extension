@@ -8,7 +8,7 @@ $(document).ready(() => {
   // and is not AWS's console/console
   let { hostname } = location;
   hostname = hostname.split('.').splice(-2).join('.');
-  const isNotAWSConsole = 'aws' in hostname.split('.') || /(doc|console)/g.test(hostname);
+  const isNotAWSConsole = !/(aws|doc|console)/g.test(hostname);
   const isMerchant = $.inArray(hostname, config.merchants);
 
   if (isMerchant > -1 && !isNotAWSConsole) {
