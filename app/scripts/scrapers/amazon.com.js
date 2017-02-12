@@ -57,20 +57,20 @@ export default {
       queryParams.Signature = new Buffer(hashBuffer, 'hex').toString('base64');
 
       const restApiEndpoint = `${URI}?${$.param(queryParams)}`;
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', restApiEndpoint, true);
-      xhr.onload = () => {
-        if (xhr.readyState === xhr.DONE && xhr.status === 200) {
-          console.log(xhr.responseText);
+      const request = new XMLHttpRequest();
+      request.open('GET', restApiEndpoint, true);
+      request.onload = () => {
+        if (request.readyState === request.DONE && request.status === 200) {
+          console.log(request.responseText);
           const XMLHeader = /<\?[\w\s=.\-'"]+\?>/gi;
-          const amazonXMLResponse = xhr.responseText.replace(XMLHeader, '');
+          const amazonXMLResponse = request.responseText.replace(XMLHeader, '');
           const soapDOM = $(amazonXMLResponse);
           const shippingInfo = this.extractShippingInformation(soapDOM);
           resolve(shippingInfo);
         }
       };
-      xhr.onerror = (error) => { reject(error); };
-      setTimeout(() => { xhr.send(); }, timeOut);
+      request.onerror = (error) => { reject(error); };
+      setTimeout(() => { request.send(); }, timeOut);
     });
   },
   extractShippingInformation(soapDOM) {

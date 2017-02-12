@@ -45,21 +45,41 @@ $(document).ready(() => {
             return;
           }
 
-          const orderToSubmit = Object.assign({}, { cartItems, merchantScraper });
-          console.log(orderToSubmit);
-
           // For fetching dimension from items to used in Volumetric Weight Calculation
           if ('getItemShippingCost' in merchantScraper) {
             const shippingCosts = [];
+            const items = cartItems.slice(0);
             let timeOut = 0;
-            for (let x = 0; x < cartItems.length; x + 10) {
-              shippingCosts.push(merchantScraper.getItemShippingCost(cartItems.splice(x, 10), timeOut));
-              timeOut += 1100;
+            for (let x = 0; x < items.length; x + 10) {
+              shippingCosts.push(merchantScraper.getItemShippingCost(items.splice(x, 10), timeOut));
+              timeOut += 500;
             }
 
             Promise.all(shippingCosts).then(function allItemsShippingCost() {
-              const itemsShippingCost = arguments.reduce((a, b) => a.concat(b), []);
-              console.log(itemsShippingCost);
+              const itemsShippingCost = [...arguments[0]].reduce((acc, cur) => acc.concat(...cur), []);
+
+              cartItems.forEach((item) => {
+                const shippingDetails = itemsShippingCost.find(sd => sd.asin === item.id);
+                item = Object.assign(item, shippingDetails);
+              });
+
+              const orderToSubmit = Object.assign({}, { cartItems, merchantScraper });
+              const data = new FormData();
+              data.append('order', JSON.stringify(orderToSubmit));
+
+              const request = new XMLHttpRequest();
+              request.open('POST', 'https://api.vitumob.com', true);
+              request.setRequestHeader('Content-Type', 'application/json');
+              request.onload = () => {
+                if (request.readyState === request.DONE && request.status === 200) {
+                  // TO DO:
+                  // Get back the CART ID
+                  // Open new TAB with URL: http://vitumob.com/cart/:CART_ID and forcus on it
+                  console.log(request.responseText);
+                }
+              };
+              request.onerror = (error) => { console.error(error); };
+              request.send(data);
             });
           }
         } catch (err) {
