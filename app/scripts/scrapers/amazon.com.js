@@ -39,7 +39,7 @@ export default {
   getItemShippingCost(items, timeOut = 0) {
     const AWSAccessKeyId = 'AKIAI6DWQQP2AACCGI6A';
     const AWSSecretKey = '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';
-    const URI = 'https://webservices.amazon.com/onca/xml';
+    const AWSSOAPEndpoint = 'https://webservices.amazon.com/onca/xml';
 
     return new Promise((resolve, reject) => {
       const queryParams = {
@@ -56,12 +56,11 @@ export default {
       const hashBuffer = hash.hmac(hash.sha256, AWSSecretKey).update(stringToSign).digest('hex');
       queryParams.Signature = new Buffer(hashBuffer, 'hex').toString('base64');
 
-      const restApiEndpoint = `${URI}?${$.param(queryParams)}`;
+      const restApiEndpoint = `${AWSSOAPEndpoint}?${$.param(queryParams)}`;
       const request = new XMLHttpRequest();
       request.open('GET', restApiEndpoint, true);
       request.onload = () => {
         if (request.readyState === request.DONE && request.status === 200) {
-          console.log(request.responseText);
           const XMLHeader = /<\?[\w\s=.\-'"]+\?>/gi;
           const amazonXMLResponse = request.responseText.replace(XMLHeader, '');
           const soapDOM = $(amazonXMLResponse);
