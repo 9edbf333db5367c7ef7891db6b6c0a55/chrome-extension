@@ -28,8 +28,8 @@ export default {
         attrWrapper.forEach((elem) => {
           const attribute = $(elem).find('span:first-child').text().trim();
           let value = $(elem).find('span:last-child').text().trim();
-          value = attribute === 'Qty' ? parseInt(value, 10) : value;
-          item[attribute === 'Qty' ? 'quantity' : attribute.toLowerCase()] = value;
+          value = attribute.indexOf('Qty') > -1 ? parseInt(value.toLowerCase().replace(/[a-z]+/g, ''), 10) : value;
+          item[attribute.indexOf('Qty') > -1 ? 'quantity' : attribute.toLowerCase()] = value;
         });
       }
 
