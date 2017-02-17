@@ -1,23 +1,23 @@
 import config from './helpers/config';
 import headerbar from './includes/headerbar';
 import modal from './includes/modal';
-import main from './main';
+import merchants from './merchants';
 
 $(document).ready(() => {
   // Check if the site loaded is one of the merchants we support
   // and is not AWS's console/console
   let { hostname } = location;
   hostname = hostname.split('.').splice(-2).join('.');
-  const isNotOtherAWSServices = /(aws|doc|console)/g.test(hostname);
+  const isOtherAWSServices = /(aws|doc|console)/g.test(hostname);
   const isMerchant = $.inArray(hostname, config.merchants);
 
-  if (isMerchant > -1 && !isNotOtherAWSServices) {
+  if (isMerchant > -1 && !isOtherAWSServices) {
     // Add logic once headerbar & modal box have been injected and compiled
     Promise.all([headerbar(), modal()]).then((promised) => {
       // VM headerbar and modal injected into the merchant's page
       const { headerBar, stickyHeaderBar } = promised[0];
       const modalbox = promised[1];
-      const merchantScraper = main[hostname.replace(/\.co(m|\.uk)/gi, '')].default;
+      const merchantScraper = merchants[hostname.replace(/\.co(m|\.uk)/gi, '')].default;
 
       if ('headerBarEl' in merchantScraper) {
         if ($.isArray(merchantScraper.headerBarEl)) {
@@ -45,45 +45,57 @@ $(document).ready(() => {
             return;
           }
 
+          const performRequest = () => {
+            const { name, host } = merchantScraper;
+            const data = new FormData();
+            data.append('order', JSON.stringify({ name, host, items: cartItems.selector }));
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'https://api.vitumob.xyz', true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.onload = () => {
+              if (request.readyState === request.DONE && request.status === 200) {
+                // TO DO:
+                // Get back the CART ID
+                // Open new TAB with URL: http://vitumob.com/cart/:CART_ID and forcus on it
+                console.log(request.responseText);
+              }
+            };
+            request.onerror = (error) => { console.error(error); };
+            request.send(data);
+          };
+
           // For fetching dimension from items to used in Volumetric Weight Calculation
           if ('getItemShippingCost' in merchantScraper) {
             const shippingCosts = [];
             const items = cartItems.slice(0);
             let timeOut = 0;
+
             for (let x = 0; x < items.length; x + 10) {
               shippingCosts.push(merchantScraper.getItemShippingCost(items.splice(x, 10), timeOut));
               timeOut += 500;
             }
 
-            Promise.all(shippingCosts).then(function allItemsShippingCost() {
-              const itemsShippingCost = [...arguments[0]].reduce((acc, cur) => acc.concat(...cur), []);
+            Promise.all(shippingCosts)
+              .then(function allItemsShippingCost() {
+                const args = [...arguments[0]];
+                const itemsShippingCost = args.reduce((acc, cur) => acc.concat(...cur), []);
 
-              cartItems.forEach((item) => {
-                const shippingDetails = itemsShippingCost.find(sd => sd.asin === item.id);
-                item = Object.assign(item, shippingDetails);
+                cartItems.forEach((item) => {
+                  const shippingDetails = itemsShippingCost.find(sd => sd.asin === item.id);
+                  item = Object.assign(item, shippingDetails);
+                });
+
+                performRequest();
               });
-
-              const { name, host } = merchantScraper;
-              const data = new FormData();
-              data.append('order', JSON.stringify({ name, host, items: cartItems.selector }));
-
-              const request = new XMLHttpRequest();
-              request.open('POST', 'https://api.vitumob.com', true);
-              request.setRequestHeader('Content-Type', 'application/json');
-              request.onload = () => {
-                if (request.readyState === request.DONE && request.status === 200) {
-                  // TO DO:
-                  // Get back the CART ID
-                  // Open new TAB with URL: http://vitumob.com/cart/:CART_ID and forcus on it
-                  console.log(request.responseText);
-                }
-              };
-              request.onerror = (error) => { console.error(error); };
-              request.send(data);
-            });
+            return;
           }
+
+          performRequest();
         } catch (err) {
-          // On error, GRAB MERCHANT CART HTML, stringify it and send it to VM admin as email
+          // TO DO:
+          // On error, GRAB MERCHANT CART HTML
+          // stringify it and send it to VM admin as email
           console.error(err);
         }
       };
