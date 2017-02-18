@@ -36,6 +36,6 @@ export default {
       const priceString = itemElement.find('.price p:first-child').text().replace(/\$|£|,|\s/g, '');
       item.price = parseFloat(priceString, 10) / item.quantity;
       return item;
-    })
+    });
   },
 };

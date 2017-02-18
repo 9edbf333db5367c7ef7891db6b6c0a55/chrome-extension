@@ -45,7 +45,7 @@ $(document).ready(() => {
             return;
           }
 
-          const performRequest = () => {
+          const postUserOrder = () => {
             const { name, host } = merchantScraper;
             const data = new FormData();
             data.append('order', JSON.stringify({ name, host, items: cartItems.selector }));
@@ -86,12 +86,12 @@ $(document).ready(() => {
                   item = Object.assign(item, shippingDetails);
                 });
 
-                performRequest();
+                postUserOrder();
               });
             return;
           }
 
-          performRequest();
+          postUserOrder();
         } catch (err) {
           // TO DO:
           // On error, GRAB MERCHANT CART HTML
