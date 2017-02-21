@@ -4,7 +4,11 @@ export default {
   name: 'victoriassecret',
   host: 'https://www.victoriassecret.com/',
   cartPath: '/commerce2/checkout',
-  headerBarEl: ['header.smoNavCondensedState section', '#nav-primary'],
+  headerBarEl: [
+    'header.smoNavCondensedState section',
+    '#nav-primary',
+    'header.main-header, header.main-header section',
+  ],
   scraper() {
     // BUG FIXED: Fetches the content twice because of the floating hidden sidebar shopping cart
     const cartItems = $('.pinned-scroll-content > .fab-bag > .fab-product-selection');
