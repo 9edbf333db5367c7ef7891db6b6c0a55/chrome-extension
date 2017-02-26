@@ -54,33 +54,27 @@ $(document).ready(() => {
             return;
           }
 
-          const postUserOrder = () => {
-            const { name, host } = merchantScraper;
-            const data = new FormData();
-            data.append('order', JSON.stringify({
-              merchant: name.toLowerCase(),
-              merchantHost: host,
-              uuid: userId,
-              items: cartItems.selector,
-            }));
+          const { name } = merchantScraper;
+          const order = JSON.stringify({
+            merchant: name.toLowerCase(),
+            uuid: userId,
+            items: cartItems.selector,
+          });
 
-            const request = new XMLHttpRequest();
-            // endpoint -> https://vitumob-157016.appspot.com/order/new
-            request.open('POST', 'https://api.vitumob.xyz', true);
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.onload = () => {
-              if (request.readyState === request.DONE && request.status === 200) {
-                // TO DO:
-                // Get back the CART ID
-                // Open new TAB with URL: http://vitumob.com/cart/:CART_ID and forcus on it
-                console.log(request.responseText);
-              }
-            };
-            request.onerror = (error) => { console.error(error); };
-            request.send(data);
+          const request = new XMLHttpRequest();
+          request.open('POST', 'https://vitumob-159912.appspot.com/order', true);
+          request.setRequestHeader('Accept', 'application/json, */*');
+          request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+          request.onload = () => {
+            if (request.readyState === request.DONE && request.status === 200) {
+              // TO DO:
+              // Get back the CART ID
+              // Open new TAB with URL: http://vitumob.com/cart/:CART_ID and forcus on it
+              console.log(JSON.parse(request.responseText));
+            }
           };
-
-          postUserOrder();
+          request.onerror = (error) => { console.error(error); };
+          request.send(JSON.stringify({ order }));
         } catch (err) {
           // TO DO:
           // On error, GRAB MERCHANT CART HTML
