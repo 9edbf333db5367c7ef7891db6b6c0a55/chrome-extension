@@ -14,11 +14,16 @@ $(document).ready(() => {
 
   // get user's UUID generated on 1st visit.
   // if user doesnt have one yet, we generate, assign him and store it locally
-  let userId = localStorage.getItem('vitumobUserUUID');
-  if (!userId) {
-    userId = uuidv1();
-    localStorage.setItem('vitumobUserUUID', userId);
-  }
+  let userId;
+  chrome.storage.sync.get('vitumobUserUUID', (result) => {
+    if (!('vitumobUserUUID' in result)) {
+      userId = uuidv1();
+      chrome.storage.sync.set({ vitumobUserUUID: userId });
+      return;
+    }
+
+    userId = result.vitumobUserUUID;
+  });
 
   if (isMerchant > -1 && !isOtherAWSServices) {
     // Add logic once headerbar & modal box have been injected and compiled
