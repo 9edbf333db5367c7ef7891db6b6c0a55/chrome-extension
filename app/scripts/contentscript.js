@@ -1,3 +1,4 @@
+import { v1 as uuidv1 } from 'node-uuid';
 import config from './helpers/config';
 import headerbar from './includes/headerbar';
 import modal from './includes/modal';
@@ -10,6 +11,14 @@ $(document).ready(() => {
   hostname = hostname.split('.').splice(-2).join('.');
   const isOtherAWSServices = /(aws|doc|console)/g.test(hostname);
   const isMerchant = $.inArray(hostname, config.merchants);
+
+  // get user's UUID generated on 1st visit.
+  // if user doesnt have one yet, we generate, assign him and store it locally
+  let userId = localStorage.getItem('vitumobUserUUID');
+  if (!userId) {
+    userId = uuidv1();
+    localStorage.setItem('vitumobUserUUID', userId);
+  }
 
   if (isMerchant > -1 && !isOtherAWSServices) {
     // Add logic once headerbar & modal box have been injected and compiled
@@ -48,10 +57,16 @@ $(document).ready(() => {
           const postUserOrder = () => {
             const { name, host } = merchantScraper;
             const data = new FormData();
-            data.append('order', JSON.stringify({ name, host, items: cartItems.selector }));
+            data.append('order', JSON.stringify({
+              name,
+              host,
+              uuid: userId,
+              items: cartItems.selector,
+            }));
 
             const request = new XMLHttpRequest();
-            request.open('POST', 'https://api.vitumob.xyz', true);
+            // endpoint -> https://tutorial-159014.appspot.com/order/new
+            request.open('POST', 'api.vitumob.xyz', true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.onload = () => {
               if (request.readyState === request.DONE && request.status === 200) {
