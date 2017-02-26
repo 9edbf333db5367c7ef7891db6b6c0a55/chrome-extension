@@ -1,6 +1,3 @@
-import moment from 'moment';
-import hash from 'hash.js';
-
 export default {
   name: 'Amazon',
   host: 'https://www.amazon.com',
@@ -34,101 +31,6 @@ export default {
 
       item.price = parseFloat(priceString, 10);
       return item;
-    });
-  },
-  getItemShippingCost(items, timeOut = 0) {
-    const AWSAccessKeyId = 'AKIAI6DWQQP2AACCGI6A';
-    const AWSSecretKey = '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';
-    const AWSSOAPEndpoint = 'https://webservices.amazon.com/onca/xml';
-
-    return new Promise((resolve, reject) => {
-      const queryParams = {
-        AWSAccessKeyId,
-        Service: 'AWSECommerceService',
-        AssociateTag: 'vit09-20',
-        Operation: 'ItemLookup',
-        ItemId: items.map(item => item.id).join(','),
-        ResponseGroup: 'ItemAttributes,OfferFull',
-        Timestamp: moment(new Date()).utc().format(),
-      };
-      const queryStringParams = $.param(queryParams).split('&').sort().join('&');
-      const stringToSign = `GET\nwebservices.amazon.com\n/onca/xml\n${queryStringParams}`;
-      const hashBuffer = hash.hmac(hash.sha256, AWSSecretKey).update(stringToSign).digest('hex');
-      queryParams.Signature = new Buffer(hashBuffer, 'hex').toString('base64');
-
-      const restApiEndpoint = `${AWSSOAPEndpoint}?${$.param(queryParams)}`;
-      const request = new XMLHttpRequest();
-      request.open('GET', restApiEndpoint, true);
-      request.onload = () => {
-        if (request.readyState === request.DONE && request.status === 200) {
-          const XMLHeader = /<\?[\w\s=.\-'"]+\?>/gi;
-          const amazonXMLResponse = request.responseText.replace(XMLHeader, '');
-          const soapDOM = $(amazonXMLResponse);
-          const shippingInfo = this.extractShippingInformation(soapDOM);
-          resolve(shippingInfo);
-        }
-      };
-      request.onerror = (error) => { reject(error); };
-      setTimeout(() => { request.send(); }, timeOut);
-    });
-  },
-  extractShippingInformation(soapDOM) {
-    const cartItems = soapDOM.find('Item');
-    return cartItems.map(function loopItems() {
-      const item = $(this);
-      let shippingCost = 0;
-      const shippingDetails = {};
-      const PackageDimensions = item.find('PackageDimensions');
-      if (PackageDimensions.length && PackageDimensions.children().length) {
-        PackageDimensions.children().each(function loopElements() {
-          const elem = $(this);
-          let units = elem.attr('Units');
-          let value = parseInt(elem.text(), 10);
-          value = units.indexOf('hundredths') > -1 ? value / 100 : value;
-
-          units = units.replace('hundredths-', '');
-          switch (units) {
-            case 'ounces':
-              value *= 0.0283495;
-              break;
-            case 'inches':
-              value *= 2.54;
-              break;
-            case 'pounds':
-              value *= 0.453592;
-              break;
-            default:
-              break;
-          }
-
-          shippingDetails[elem[0].localName.toLowerCase()] = value;
-        });
-
-        // calculate volumetric weight
-        const { height, width, length } = shippingDetails;
-        let volumetricWeight = height * width * length;
-        volumetricWeight /= 6000;
-
-        if (volumetricWeight > shippingDetails.weight) {
-          shippingCost = volumetricWeight * 7.50;
-        } else {
-          shippingCost = shippingDetails.weight * 7.50;
-        }
-      } else {
-        shippingCost += (2.20462 * 7.50);
-      }
-
-      // If it's not a prime item add 5 dollar on top for shipping
-      if (item.find('IsEligibleForPrime').text().indexOf('0') > -1) {
-        shippingCost += 5.00;
-      }
-
-      return {
-        title: item.find('Title').text(),
-        asin: item.find('ASIN').text(),
-        shippingCost,
-        shippingDetails,
-      };
     });
   },
 };

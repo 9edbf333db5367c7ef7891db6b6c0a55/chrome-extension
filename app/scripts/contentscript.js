@@ -58,15 +58,15 @@ $(document).ready(() => {
             const { name, host } = merchantScraper;
             const data = new FormData();
             data.append('order', JSON.stringify({
-              name,
-              host,
+              merchant: name.toLowerCase(),
+              merchantHost: host,
               uuid: userId,
               items: cartItems.selector,
             }));
 
             const request = new XMLHttpRequest();
-            // endpoint -> https://tutorial-159014.appspot.com/order/new
-            request.open('POST', 'api.vitumob.xyz', true);
+            // endpoint -> https://vitumob-157016.appspot.com/order/new
+            request.open('POST', 'https://api.vitumob.xyz', true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.onload = () => {
               if (request.readyState === request.DONE && request.status === 200) {
@@ -79,32 +79,6 @@ $(document).ready(() => {
             request.onerror = (error) => { console.error(error); };
             request.send(data);
           };
-
-          // For fetching dimension from items to used in Volumetric Weight Calculation
-          if ('getItemShippingCost' in merchantScraper) {
-            const shippingCosts = [];
-            const items = cartItems.slice(0);
-            let timeOut = 0;
-
-            for (let x = 0; x < items.length; x + 10) {
-              shippingCosts.push(merchantScraper.getItemShippingCost(items.splice(x, 10), timeOut));
-              timeOut += 500;
-            }
-
-            Promise.all(shippingCosts)
-              .then(function allItemsShippingCost() {
-                const args = [...arguments[0]];
-                const itemsShippingCost = args.reduce((acc, cur) => acc.concat(...cur), []);
-
-                cartItems.forEach((item) => {
-                  const shippingDetails = itemsShippingCost.find(sd => sd.asin === item.id);
-                  item = Object.assign(item, shippingDetails);
-                });
-
-                postUserOrder();
-              });
-            return;
-          }
 
           postUserOrder();
         } catch (err) {
@@ -132,8 +106,7 @@ $(document).ready(() => {
           return;
         }
 
-        // user happens to be in the cart page
-        // just load up the scrapper
+        // user happens to be in the cart page, just load up the scrapper
         vmCheckout();
       };
 
